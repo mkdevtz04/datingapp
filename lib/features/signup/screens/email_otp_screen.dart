@@ -63,10 +63,15 @@ class _EmailOtpScreenState extends State<EmailOtpScreen> {
 
     try {
       // Call backend to verify OTP
-      await ApiService.verifyEmailOtp(widget.email, code);
+      final response = await ApiService.verifyEmailOtp(widget.email, code);
+      final nextStep = response['next_step'] as String?;
 
       if (mounted) {
-        context.go('/signup/profile', extra: widget.email);
+        if (nextStep == 'home') {
+          context.go('/home');
+        } else {
+          context.go('/signup/profile', extra: widget.email);
+        }
       }
     } catch (e) {
       if (mounted) {

@@ -2,7 +2,26 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8000/api'; // Update with your backend URL
+  static const String baseUrl = 'http://192.168.3.9:8000/api'; // Update with your backend URL
+
+  static Future<Map<String, dynamic>> fetchDiscoverProfiles({
+    String? email,
+  }) async {
+    try {
+      final uri = Uri.parse('$baseUrl/discover').replace(
+        queryParameters: email == null ? null : {'email': email},
+      );
+      final response = await http.get(uri).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      throw Exception('Failed to load discover profiles');
+    } catch (e) {
+      throw Exception('Error loading discover profiles: $e');
+    }
+  }
 
   // Send OTP to email
   static Future<Map<String, dynamic>> sendEmailOtp(String email) async {
@@ -70,6 +89,109 @@ class ApiService {
       }
     } catch (e) {
       throw Exception('Error completing signup: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> saveGender({
+    required String email,
+    required String gender,
+    String? customGender,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/onboarding/gender'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'gender': gender,
+          if (customGender != null && customGender.isNotEmpty)
+            'custom_gender': customGender,
+        }),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to save gender');
+    } catch (e) {
+      throw Exception('Error saving gender: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> saveInterests({
+    required String email,
+    required List<String> interests,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/onboarding/interests'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'interests': interests,
+        }),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to save interests');
+    } catch (e) {
+      throw Exception('Error saving interests: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> saveFriendsPermission({
+    required String email,
+    required bool enabled,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/onboarding/friends'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'find_friends_enabled': enabled,
+        }),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to save friends preference');
+    } catch (e) {
+      throw Exception('Error saving friends preference: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> saveNotificationPreference({
+    required String email,
+    required bool enabled,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/onboarding/notifications'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'notifications_enabled': enabled,
+        }),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to save notification preference');
+    } catch (e) {
+      throw Exception('Error saving notification preference: $e');
     }
   }
 

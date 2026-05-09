@@ -76,7 +76,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
         return;
       }
 
-      context.go('/home');
+      context.go('/signup/iam', extra: widget.email);
     } catch (e) {
       if (!mounted) {
         return;
@@ -90,7 +90,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   }
 
   void _onSkip() {
-    context.go('/home');
+    context.go('/signup/iam', extra: widget.email);
   }
 
   void _showMessage(String message) {

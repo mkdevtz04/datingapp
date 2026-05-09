@@ -4,6 +4,11 @@ import 'package:datingapp/features/onboarding/models/onboarding_screen.dart';
 import 'package:datingapp/features/signup/screens/signup_screen.dart';
 import 'package:datingapp/features/signup/screens/email_signup_screen.dart';
 import 'package:datingapp/features/signup/screens/email_otp_screen.dart';
+import 'package:datingapp/features/signup/screens/friends_screen.dart';
+import 'package:datingapp/features/home/screens/home_screen.dart';
+import 'package:datingapp/features/signup/screens/i_am_screen.dart';
+import 'package:datingapp/features/signup/screens/notification_screen.dart';
+import 'package:datingapp/features/signup/screens/passions_screen.dart';
 import 'package:datingapp/features/signup/screens/profile_details_screen.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -36,21 +41,37 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
+      path: '/signup/iam',
+      builder: (context, state) {
+        final email = state.extra as String;
+        return IAmScreen(email: email);
+      },
+    ),
+    GoRoute(
+      path: '/signup/passions',
+      builder: (context, state) {
+        final email = state.extra as String;
+        return PassionsScreen(email: email);
+      },
+    ),
+    GoRoute(
+      path: '/signup/friends',
+      builder: (context, state) {
+        final email = state.extra as String;
+        return FriendsScreen(email: email);
+      },
+    ),
+    GoRoute(
+      path: '/signup/notifications',
+      builder: (context, state) {
+        final email = state.extra as String;
+        return NotificationScreen(email: email);
+      },
+    ),
+    GoRoute(
       path: '/home',
       builder: (context, state) => const HomeScreen(),
     ),
   ],
 );
 
-// Placeholder screens (replace with your actual screens)
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: const Center(child: Text('Home Screen')),
-    );
-  }
-}
