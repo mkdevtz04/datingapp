@@ -66,7 +66,7 @@ class _EmailOtpScreenState extends State<EmailOtpScreen> {
       await ApiService.verifyEmailOtp(widget.email, code);
 
       if (mounted) {
-        context.push('/signup/profile', extra: widget.email);
+        context.go('/signup/profile', extra: widget.email);
       }
     } catch (e) {
       if (mounted) {

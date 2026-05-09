@@ -44,6 +44,35 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> completeEmailSignup({
+    required String email,
+    required String firstName,
+    required String lastName,
+    required DateTime birthday,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/email/complete-signup'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'first_name': firstName,
+          'last_name': lastName,
+          'dob': birthday.toIso8601String().split('T').first,
+        }),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Failed to complete signup');
+      }
+    } catch (e) {
+      throw Exception('Error completing signup: $e');
+    }
+  }
+
   // Register user with email and password
   static Future<Map<String, dynamic>> registerUser({
     required String name,
