@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:datingapp/services/api_service.dart';
 
 class EmailOtpScreen extends StatefulWidget {
@@ -65,6 +66,10 @@ class _EmailOtpScreenState extends State<EmailOtpScreen> {
       // Call backend to verify OTP
       final response = await ApiService.verifyEmailOtp(widget.email, code);
       final nextStep = response['next_step'] as String?;
+
+      // Save email to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_email', widget.email);
 
       if (mounted) {
         if (nextStep == 'home') {

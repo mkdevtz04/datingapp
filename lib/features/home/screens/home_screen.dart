@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../services/api_service.dart';
 
@@ -29,7 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final response = await ApiService.fetchDiscoverProfiles();
+      final prefs = await SharedPreferences.getInstance();
+      final email = prefs.getString('user_email');
+      
+      final response = await ApiService.fetchDiscoverProfiles(email: email);
       final profiles = (response['profiles'] as List<dynamic>? ?? const [])
           .cast<Map<String, dynamic>>();
 

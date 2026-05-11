@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'birthday_picker_screen.dart';
 import '../../../services/api_service.dart';
@@ -71,6 +72,10 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
         lastName: lastName,
         birthday: _selectedBirthday!,
       );
+
+      // Save email to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_email', widget.email);
 
       if (!mounted) {
         return;

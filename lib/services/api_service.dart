@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.3.9:8000/api'; // Update with your backend URL
+  static const String baseUrl = 'http://127.0.0.1:8000/api'; // Update with your backend URL
 
   static Future<Map<String, dynamic>> fetchDiscoverProfiles({
     String? email,
