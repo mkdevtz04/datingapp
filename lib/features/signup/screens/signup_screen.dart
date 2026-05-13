@@ -183,21 +183,21 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: [
                   // Facebook
                   _SocialLoginButton(
-                    icon: Icons.facebook,
+                    imageAsset: 'assets/images/icons8-facebook-50.png',
                     onPressed: _onFacebookLogin,
                   ),
                   const SizedBox(width: 24),
 
                   // Google
                   _SocialLoginButton(
-                    icon: Icons.g_mobiledata,
+                    imageAsset: 'assets/images/icons8-google-50.png',
                     onPressed: _onGoogleLogin,
                   ),
                   const SizedBox(width: 24),
 
-                  // Apple
+                  // Email
                   _SocialLoginButton(
-                    icon: Icons.apple,
+                    imageAsset: 'assets/images/icons8-email-50.png',
                     onPressed: _onAppleLogin,
                   ),
                 ],
@@ -252,11 +252,11 @@ class _SignupScreenState extends State<SignupScreen> {
 
 // ── Social Login Button Widget ──
 class _SocialLoginButton extends StatelessWidget {
-  final IconData icon;
+  final String imageAsset;
   final VoidCallback onPressed;
 
   const _SocialLoginButton({
-    required this.icon,
+    required this.imageAsset,
     required this.onPressed,
   });
 
@@ -275,10 +275,10 @@ class _SocialLoginButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
-          child: Icon(
-            icon,
-            size: 32,
-            color: const Color(0xFFEEB738),
+          child: Image.asset(
+            imageAsset,
+            width: 32,
+            height: 32,
           ),
         ),
       ),

@@ -421,11 +421,13 @@ class _BottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const items = [
-      Icons.copy_rounded,
-      Icons.favorite_rounded,
-      Icons.chat_bubble_rounded,
-      Icons.person_rounded,
+      'assets/images/home.png',
+      'assets/images/match.png',
+      'assets/images/messages.png',
+      'assets/images/profile3.png',
     ];
+
+    const labels = ['Home', 'Matches', 'Messages', 'Profile'];
 
     return Container(
       height: 94,
@@ -457,9 +459,10 @@ class _BottomNav extends StatelessWidget {
                     )
                   else
                     const SizedBox(height: 18),
-                  Icon(
+                  Image.asset(
                     items[index],
-                    size: 34,
+                    width: 34,
+                    height: 34,
                     color: selected
                         ? const Color(0xFFF2B93B)
                         : const Color(0xFFB8B8C2),
