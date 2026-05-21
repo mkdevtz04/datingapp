@@ -11,6 +11,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _isLoading = true;
+  bool _isLoggingOut = false;
   bool _lookProfile = false;
   bool _darkMode = false;
 
@@ -68,6 +69,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
     } catch (e) {
       debugPrint('Error saving preferences: $e');
+    }
+  }
+
+  Future<void> _confirmLogout() async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFFFF2D55),
+              ),
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldLogout == true) {
+      await _logout();
+    }
+  }
+
+  Future<void> _logout() async {
+    setState(() => _isLoggingOut = true);
+
+    try {
+      await ApiService.logout();
+
+      if (!mounted) {
+        return;
+      }
+
+      context.go('/onboarding');
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+      );
+      context.go('/onboarding');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoggingOut = false);
+      }
     }
   }
 
@@ -233,9 +290,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   
                   // Logout Section
                   GestureDetector(
-                    onTap: () {
-                      // Handle logout
-                    },
+                    onTap: _isLoggingOut ? null : _confirmLogout,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       decoration: BoxDecoration(
@@ -245,10 +300,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.logout, color: Color(0xFFFF2D55), size: 24),
+                          if (_isLoggingOut)
+                            const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xFFFF2D55),
+                                ),
+                              ),
+                            )
+                          else
+                            const Icon(Icons.logout, color: Color(0xFFFF2D55), size: 24),
                           const SizedBox(width: 12),
-                          const Text(
-                            'Logout',
+                          Text(
+                            _isLoggingOut ? 'Logging out...' : 'Logout',
                             style: TextStyle(
                               color: Color(0xFFFF2D55),
                               fontSize: 18,
