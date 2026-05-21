@@ -89,10 +89,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _HeaderButton(
-                    icon: Icons.arrow_back,
-                    onTap: () => context.pop(),
-                  ),
+                  if (Navigator.canPop(context))
+                    _HeaderButton(
+                      icon: Icons.arrow_back,
+                      onTap: () => context.pop(),
+                    )
+                  else
+                    const SizedBox(width: 48, height: 48),
                   _HeaderButton(
                     icon: Icons.settings_outlined,
                     onTap: () => context.push('/settings'),

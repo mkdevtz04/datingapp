@@ -298,4 +298,26 @@ class ApiService {
       throw Exception('Error logging in: $e');
     }
   }
+
+  static Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+
+    try {
+      if (token != null) {
+        final response = await http.delete(
+          Uri.parse('$baseUrl/auth/logout'),
+          headers: await _getHeaders(),
+        ).timeout(const Duration(seconds: 10));
+
+        if (response.statusCode != 200 && response.statusCode != 204) {
+          final error = response.body.isNotEmpty ? jsonDecode(response.body) : {};
+          throw Exception(error['message'] ?? 'Failed to logout');
+        }
+      }
+    } finally {
+      await prefs.remove('auth_token');
+      await prefs.remove('user_email');
+    }
+  }
 }
