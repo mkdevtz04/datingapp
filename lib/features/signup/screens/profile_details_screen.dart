@@ -66,16 +66,19 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await ApiService.completeEmailSignup(
+      final response = await ApiService.completeEmailSignup(
         email: widget.email,
         firstName: firstName,
         lastName: lastName,
         birthday: _selectedBirthday!,
       );
 
-      // Save email to SharedPreferences
+      // Save email and token to SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user_email', widget.email);
+      if (response['token'] != null) {
+        await prefs.setString('auth_token', response['token']);
+      }
 
       if (!mounted) {
         return;

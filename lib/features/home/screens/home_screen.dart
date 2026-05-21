@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../services/api_service.dart';
@@ -194,7 +195,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             const Spacer(),
                             _BottomNav(
                               selectedIndex: 0,
-                              onTap: (_) {},
+                              onTap: (index) {
+                                if (index == 3) {
+                                  context.push('/profile');
+                                }
+                              },
                             ),
                           ],
                         ),

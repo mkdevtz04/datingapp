@@ -1,8 +1,56 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   static const String baseUrl = 'http://127.0.0.1:8000/api'; // Update with your backend URL
+
+  static Future<Map<String, String>> _getHeaders() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    return {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+  }
+
+  // Profile API
+  static Future<Map<String, dynamic>> getProfile() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/profile'),
+        headers: await _getHeaders(),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to load profile: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error loading profile: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> data) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/profile'),
+        headers: await _getHeaders(),
+        body: jsonEncode(data),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Failed to update profile');
+      }
+    } catch (e) {
+      throw Exception('Error updating profile: $e');
+    }
+  }
 
   static Future<Map<String, dynamic>> fetchDiscoverProfiles({
     String? email,
@@ -11,7 +59,10 @@ class ApiService {
       final uri = Uri.parse('$baseUrl/discover').replace(
         queryParameters: email == null ? null : {'email': email},
       );
-      final response = await http.get(uri).timeout(const Duration(seconds: 10));
+      final response = await http.get(
+        uri,
+        headers: await _getHeaders(),
+      ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);

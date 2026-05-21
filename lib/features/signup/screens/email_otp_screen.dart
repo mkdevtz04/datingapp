@@ -67,9 +67,12 @@ class _EmailOtpScreenState extends State<EmailOtpScreen> {
       final response = await ApiService.verifyEmailOtp(widget.email, code);
       final nextStep = response['next_step'] as String?;
 
-      // Save email to SharedPreferences
+      // Save email and token to SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user_email', widget.email);
+      if (response['token'] != null) {
+        await prefs.setString('auth_token', response['token']);
+      }
 
       if (mounted) {
         if (nextStep == 'home') {

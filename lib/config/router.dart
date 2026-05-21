@@ -10,6 +10,8 @@ import 'package:datingapp/features/signup/screens/i_am_screen.dart';
 import 'package:datingapp/features/signup/screens/notification_screen.dart';
 import 'package:datingapp/features/signup/screens/passions_screen.dart';
 import 'package:datingapp/features/signup/screens/profile_details_screen.dart';
+import 'package:datingapp/features/profile/screens/profile_screen.dart';
+import 'package:datingapp/features/profile/screens/settings_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/onboarding',
@@ -72,6 +74,13 @@ final GoRouter appRouter = GoRouter(
       path: '/home',
       builder: (context, state) => const HomeScreen(),
     ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen(),
+    ),
   ],
 );
-
